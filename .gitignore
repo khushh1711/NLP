@@ -1,0 +1,23 @@
+# Python
+backend/venv/
+backend/__pycache__/
+backend/*/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# SQLite & Storage
+backend/*.db
+backend/*.db-journal
+backend/*.db-wal
+backend/*.db-shm
+backend/storage/*
+!backend/storage/.gitkeep
+
+# Logs
+*.log
