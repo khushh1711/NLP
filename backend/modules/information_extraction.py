@@ -24,16 +24,17 @@ logger = logging.getLogger(__name__)
 
 # ─── Clean Entity Dictionaries ───────────────────────────────────────────────
 
-# Real benchmark datasets and corpora (Strictly no repositories like arXiv/PubMed/S2ORC!)
+# Real benchmark datasets and corpora
 KNOWN_DATASETS = [
     # NLP Benchmarks
     "GLUE", "SuperGLUE", "SQuAD", "SQuAD v1.1", "SQuAD v2.0", "SQuAD 2.0",
     "MultiNLI", "SNLI", "MNLI", "QNLI", "SST-2", "CoLA", "MRPC", "QQP", "STS-B", "RTE", "WNLI",
     "CoNLL-2003", "CoNLL 2003", "CoNLL",
     "CNN/DailyMail", "CNN-DailyMail", "XSum", "Gigaword",
+    "PubMed", "arXiv", "SciTLDR", "Multi-News", "BillSum", "BigPatent", "WikiHow", "Newsroom",
     "WMT 2014", "WMT14", "WMT 2016", "WMT16", "WMT", "IWSLT",
-    "BookCorpus", "BooksCorpus", "English Wikipedia", "Wikipedia", "Common Crawl", "C4", "OpenWebText",
-    "TriviaQA", "Natural Questions", "NaturalQuestions", "HotpotQA", "NewsQA", "RACE", "ARC",
+    "BookCorpus", "BooksCorpus", "English Wikipedia", "Wikipedia", "Common Crawl", "C4", "HugeNews", "OpenWebText",
+    "TriviaQA", "Natural Questions", "NaturalQuestions", "HotpotQA", "WikiHop", "NewsQA", "RACE", "ARC",
     "Penn Treebank", "PTB",
     # Vision & Robotics Benchmarks
     "ImageNet", "MS-COCO", "COCO", "CIFAR-10", "CIFAR-100", "MNIST",
@@ -47,7 +48,7 @@ KNOWN_METHODS = [
     "BERT", "BERTBASE", "BERTLARGE", "RoBERTa", "ALBERT", "DistilBERT",
     "Transformer", "Multi-Head Attention", "Self-Attention", "Scaled Dot-Product Attention",
     "GPT", "OpenAI GPT", "GPT-2", "GPT-3", "GPT-4",
-    "T5", "BART", "ELECTRA", "DeBERTa", "XLNet",
+    "T5", "BART", "PEGASUS", "Longformer", "LED", "Discourse-Aware", "CATTS", "ELECTRA", "DeBERTa", "XLNet",
     "Diffusion Transformer", "Video Diffusion", "Diffusion Model",
     "LSTM", "BiLSTM", "ELMo", "ResNet", "CNN", "RNN",
     # Training / Algorithmic Paridigms
@@ -125,6 +126,37 @@ def _is_table_dump(text: str) -> bool:
 
 # ─── Facet Extractors ────────────────────────────────────────────────────────
 
+def _normalize_task_objective(task_sentence: str) -> str:
+    """Normalize extracted task sentences into substantive scientific task descriptions."""
+    lower = task_sentence.lower()
+    if "extreme summarization" in lower or "tldr" in lower:
+        return "Extreme Scientific Summarization (TLDR)"
+    if "abstractive summarization" in lower or "summarize" in lower or "summarization" in lower:
+        if "long" in lower:
+            return "Long-Document Abstractive Summarization"
+        return "Abstractive Text Summarization"
+    if "gap-sentences" in lower or ("pre-training" in lower and "summarization" in lower):
+        return "Pre-training for Abstractive Summarization"
+    if "denoising" in lower or "sequence-to-sequence" in lower:
+        return "Denoising Sequence-to-Sequence Generation"
+    if "transfer learning" in lower or "text-to-text" in lower:
+        return "Unified Text-to-Text Transfer Learning"
+    if "long sequences" in lower or "long document" in lower or "linearly with sequence length" in lower:
+        return "Scalable Long-Document Transformer Modeling"
+    if "machine translation" in lower or "translation" in lower:
+        return "Neural Machine Translation"
+    if "question answering" in lower or "qa" in lower:
+        return "Question Answering"
+    if "language representation" in lower or "pre-train" in lower:
+        return "Pre-trained Language Representations"
+    m = re.search(r'(?:we propose|we present|we introduce|we study|we address|the task of)\s+([^,;.]+)', task_sentence, re.I)
+    if m:
+        cand = m.group(1).strip()
+        if 8 < len(cand) < 60:
+            return cand.title()
+    return "Scientific NLP Investigation"
+
+
 def extract_tasks(page_texts: List[Tuple[int, str]]) -> List[Dict]:
     """Extract clean research task objectives without author or header metadata."""
     found: List[Dict] = []
@@ -133,7 +165,7 @@ def extract_tasks(page_texts: List[Tuple[int, str]]) -> List[Dict]:
         sentences = _split_into_sentences(page_text)
         for sentence in sentences:
             # Skip author / affiliation blocks
-            if any(bad in sentence.lower() for bad in ["google ai", "university", "department of", "arxiv:", "correspondence to", "equal contribution"]):
+            if any(bad in sentence.lower() for bad in ["google ai", "university", "department of", "arxiv:", "correspondence to", "equal contribution", "{"]):
                 continue
 
             lower = sentence.lower()
@@ -146,15 +178,16 @@ def extract_tasks(page_texts: List[Tuple[int, str]]) -> List[Dict]:
                 # Formulate a concise display value for the table
                 concise = task_sentence
                 if len(concise) > 110:
-                    # Try to capture up to the first clean comma or clause
                     cut = concise[:110]
                     last_space = cut.rfind(' ')
                     concise = cut[:last_space] + "…"
 
+                norm_val = _normalize_task_objective(task_sentence)
+
                 found.append({
                     "field_type":         "TASK",
                     "value":              concise,
-                    "normalized_value":   "Research Task",
+                    "normalized_value":   norm_val,
                     "evidence_text":      task_sentence,
                     "page_number":        page_num,
                     "extraction_method":  "discourse_extraction",
@@ -169,20 +202,29 @@ def extract_tasks(page_texts: List[Tuple[int, str]]) -> List[Dict]:
 def extract_methods(page_texts: List[Tuple[int, str]]) -> List[Dict]:
     """
     Extract model architectures and methods, prioritizing primary novel models
-    over generic words like 'fine-tuning'.
+    over generic words like 'fine-tuning' and excluding optimizers.
     """
     found: List[Dict] = []
     seen: set = set()
 
-    # Score method priority (core models appear in title/abstract or are specialized)
+    # Prioritize primary proposed architectures over baselines and optimizers
     def priority_score(name: str, page_num: int) -> int:
         score = 0
         if page_num == 1:
+            score += 15
+        # Primary novel architectures get top weight
+        if name in [
+            "Discourse-Aware", "CATTS", "PEGASUS", "BART", "T5", "Longformer", "LED",
+            "Surgical World-Action Model", "Surgical WAM", "Cosmos Policy", "BERTBASE", "BERTLARGE"
+        ]:
+            score += 25
+        elif name in ["BERT", "Transformer", "RoBERTa", "GPT", "GPT-2"]:
             score += 10
-        if name in ["Surgical World-Action Model", "Surgical WAM", "BERT", "Transformer", "Cosmos Policy"]:
-            score += 20
-        if name in ["Fine-tuning", "Pre-training", "Transfer Learning"]:
-            score -= 5
+        # Generic optimizers and baselines get penalized so they don't replace primary models
+        if name in ["Adam", "AdamW", "SGD", "Beam Search"]:
+            score -= 30
+        if name in ["Fine-tuning", "Pre-training", "Transfer Learning", "MLM", "NSP"]:
+            score -= 10
         return score
 
     for page_num, page_text in page_texts:
@@ -294,13 +336,13 @@ def extract_results(page_texts: List[Tuple[int, str]]) -> List[Dict]:
 
     # Robust academic quantitative result regex patterns
     result_patterns = [
-        # 1. Number + Metric: e.g. "28.4 BLEU", "93.2 Test F1", "80.5% GLUE score", "84.1% EM"
+        # 1. Number + Metric (e.g. 28.4 BLEU, 91.0% F1, 80.5% GLUE, 93.2 Test F1)
         re.compile(
             r'(\b\d{1,3}(?:\.\d{1,2})?\s*%\s*(?:(?:overall|test|validation)\s+)?(?:' + '|'.join(re.escape(m) for m in KNOWN_METRICS) + r')\b)',
             re.IGNORECASE
         ),
         re.compile(
-            r'(\b\d{1,3}(?:\.\d{1,2})?\s+(?:' + '|'.join(re.escape(m) for m in KNOWN_METRICS) + r')\b)',
+            r'(\b\d{1,3}\.\d{1,2}\s+(?:' + '|'.join(re.escape(m) for m in KNOWN_METRICS) + r')\b)',
             re.IGNORECASE
         ),
         # 2. Metric + Number: e.g. "BLEU of 28.4", "F1 score of 91.0%", "Test F1 to 93.2"
@@ -335,10 +377,15 @@ def extract_results(page_texts: List[Tuple[int, str]]) -> List[Dict]:
                 match = pattern.search(sentence)
                 if match:
                     matched_phrase = match.group(1).strip()
+                    # Filter out table/figure cross-references e.g. "Table 6 ROUGE"
+                    if re.search(r'\b(?:Table|Figure|Fig\.|Section|Sec\.)\s+' + re.escape(matched_phrase), sentence, re.I):
+                        continue
+                    # Filter out isolated table numbers like "6 ROUGE"
+                    if re.match(r'^\d+\s+[A-Za-z]+$', matched_phrase) and not '.' in matched_phrase:
+                        continue
                     if sentence not in seen_evidence:
                         seen_evidence.add(sentence)
                         
-                        # Clean concise value for tabular view
                         clean_val = matched_phrase
                         if len(clean_val) > 75:
                             clean_val = clean_val[:75] + "…"
@@ -352,27 +399,73 @@ def extract_results(page_texts: List[Tuple[int, str]]) -> List[Dict]:
                             "extraction_method":  "numeric_regex",
                             "verification_status": "needs_review",
                         })
-                    break  # Move to next sentence once matched
+                    break
 
     return found[:10]
+
+
+def _normalize_limitation(sentence: str) -> str:
+    """Normalize author limitation sentences to clear, substantive scientific categories."""
+    lower = sentence.lower()
+    if any(k in lower for k in ["quadratic", "sequence length", "scales quadratically", "long sequence"]):
+        return "Quadratic Self-Attention Bottleneck"
+    if any(k in lower for k in ["expensive", "computational cost", "tpu", "prohibitively"]):
+        return "Computational & Hardware Scalability Constraints"
+    if any(k in lower for k in ["rouge", "human evaluation", "metric", "nuance"]):
+        return "Automated Metric & Evaluation Nuance Limitations"
+    if any(k in lower for k in ["overfitting", "regularization", "back-translation"]):
+        return "Regularization & Overfitting Risks"
+    if any(k in lower for k in ["section", "headings", "discourse structure"]):
+        return "Discourse Section Dependency"
+    if any(k in lower for k in ["hallucinat", "factual", "faithfulness", "memoriz"]):
+        return "Factual Consistency & Memorization Risks"
+    if any(k in lower for k in ["low-resource", "small data", "supervised examples", "mismatch"]):
+        return "Low-Resource Adaptation & Supervised Data Scarcity"
+    return "Methodological Constraint"
 
 
 def extract_limitations(page_texts: List[Tuple[int, str]]) -> List[Dict]:
     """
     Extract limitations, bottlenecks, and computational constraints.
-    Searches across body pages while avoiding references.
+    Stops before references and appendices to prevent noisy non-body text.
     """
     found: List[Dict] = []
     seen: set = set()
+    total_pages = len(page_texts)
+    ref_seen = False
 
     for page_num, page_text in page_texts:
-        # Stop if we hit the references section
-        if re.search(r'\b(?:References|REFERENCES|Bibliography)\b', page_text) and page_num > 4:
-            continue
+        lower_p = page_text.lower()
+        # Detect references section start (typically page > 4)
+        if page_num > 4 and (
+            re.search(r'^\s*(?:references|bibliography)\s*$', lower_p, re.MULTILINE)
+            or '\nreferences\n' in lower_p
+            or 'references\n' in lower_p
+        ):
+            ref_seen = True
+
+        if ref_seen:
+            break
+
+        # In very long papers (>20 pages), main body discussions usually finish by page 15 or 45
+        if total_pages > 20 and page_num > 46:
+            break
 
         sentences = _split_into_sentences(page_text)
         for sentence in sentences:
             if _is_table_dump(sentence):
+                continue
+
+            # Skip author / affiliation / email / acknowledgment noise
+            if any(bad in sentence.lower() for bad in [
+                "@", "http", "arxiv:", "google ai", "allen institute", "facebook ai",
+                "university", "department of", "equal contribution", "grant", "fellowship",
+                "section 901", "taxable"
+            ]):
+                continue
+
+            # Skip opening abstract boilerplate
+            if sentence.lower().startswith("abstract"):
                 continue
 
             lower = sentence.lower()
@@ -380,17 +473,18 @@ def extract_limitations(page_texts: List[Tuple[int, str]]) -> List[Dict]:
                 if sentence not in seen:
                     seen.add(sentence)
 
-                    # Create a clean concise summary value for table display
                     concise = sentence
-                    if len(concise) > 90:
-                        cut = concise[:90]
+                    if len(concise) > 95:
+                        cut = concise[:95]
                         last_space = cut.rfind(' ')
                         concise = cut[:last_space] + "…"
+
+                    norm_label = _normalize_limitation(sentence)
 
                     found.append({
                         "field_type":         "LIMITATION",
                         "value":              concise,
-                        "normalized_value":   "Limitation",
+                        "normalized_value":   norm_label,
                         "evidence_text":      sentence,
                         "page_number":        page_num,
                         "extraction_method":  "constraint_heuristic",

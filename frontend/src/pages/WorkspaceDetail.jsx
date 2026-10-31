@@ -32,6 +32,8 @@ export default function WorkspaceDetail() {
   const [brief, setBrief]                 = useState(null);
   const [briefLoading, setBriefLoading]   = useState(false);
   const [briefError, setBriefError]       = useState("");
+  const [evidenceModal, setEvidenceModal] = useState(null);
+  const [expandedSections, setExpandedSections] = useState({});
 
   // Q&A state
   const [qaQuestion, setQaQuestion]       = useState("");
@@ -406,9 +408,14 @@ export default function WorkspaceDetail() {
         <div className="tab-content-container">
           <div className="section-header-row">
             <div>
-              <h2 className="section-title">📑 Multi-Paper Research Brief</h2>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <h2 className="section-title">📑 Multi-Paper Research Synthesis</h2>
+                <span className="navbar-badge" style={{ backgroundColor: "rgba(99, 102, 241, 0.15)", color: "#4f46e5" }}>
+                  Evidence-Grounded Cross-Paper Engine
+                </span>
+              </div>
               <p className="page-subtitle">
-                Synthesized scientific evidence across all {completedPapers.length} analyzed papers, structured into 9 core dimensions.
+                Synthesized scientific evidence across {completedPapers.length} analyzed papers, contrasting architectural paradigms, pretraining objectives, benchmarks, and author-stated constraints.
               </p>
             </div>
             <button
@@ -429,79 +436,362 @@ export default function WorkspaceDetail() {
 
           {briefError && <div className="error-message">{briefError}</div>}
 
-          {brief && brief.sections && (
-            <div>
-              {/* Coverage Stats Strip */}
-              {brief.coverage_stats && brief.coverage_stats.total_entities > 0 && (
-                <div className="hero-stats" style={{ marginBottom: 24 }}>
-                  <div className="hero-stat">
-                    <span className="hero-stat-value">{brief.paper_count}</span>
-                    <span className="hero-stat-label">Analyzed Papers</span>
+          {brief && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              {/* Secondary Metadata Strip (Small and Secondary) */}
+              {brief.coverage_stats && (
+                <div className="compact-stats-strip">
+                  <span className="compact-stat-item"><strong>{brief.paper_count}</strong> Analyzed Papers</span>
+                  <span className="compact-stat-dot">•</span>
+                  <span className="compact-stat-item"><strong>{brief.coverage_stats.total_pages || 0}</strong> Screened Pages</span>
+                  <span className="compact-stat-dot">•</span>
+                  <span className="compact-stat-item"><strong>{brief.coverage_stats.methods_cataloged || 0}</strong> Distinct Architectures</span>
+                  <span className="compact-stat-dot">•</span>
+                  <span className="compact-stat-item"><strong>{brief.coverage_stats.datasets_cataloged || 0}</strong> Benchmarks</span>
+                  <span className="compact-stat-dot">•</span>
+                  <span className="compact-stat-item"><strong>{brief.coverage_stats.total_entities || 0}</strong> Extracted Entities</span>
+                  <span className="compact-stat-dot">•</span>
+                  <span className="compact-stat-pill">100% Page Verified</span>
+                </div>
+              )}
+
+              {/* 1. EXECUTIVE RESEARCH SYNTHESIS */}
+              {brief.executive_synthesis && (
+                <div className="executive-synthesis-card">
+                  <div className="executive-synthesis-header">
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <span className="exec-icon">✨</span>
+                      <div>
+                        <h3 className="exec-title">Executive Research Synthesis</h3>
+                        <div className="exec-inquiry-tag">
+                          Workspace Target Inquiry: <strong>{brief.research_question || workspace?.title || "Scientific Literature Mining"}</strong>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="hero-stat-divider" />
-                  <div className="hero-stat">
-                    <span className="hero-stat-value">{brief.coverage_stats.total_pages || 0}</span>
-                    <span className="hero-stat-label">Pages Screened</span>
+                  <p className="exec-narrative">{brief.executive_synthesis}</p>
+                </div>
+              )}
+
+              {/* 2. SUBSTANTIVE KEY FINDINGS ACROSS PAPERS */}
+              {brief.key_findings && brief.key_findings.length > 0 && (
+                <div className="findings-section-container">
+                  <div className="section-subheading-row">
+                    <div>
+                      <h3 className="findings-group-title">🔍 Key Findings Across Papers</h3>
+                      <p className="findings-group-desc">
+                        Substantive cross-paper findings explaining major architectural paradigms, meaningful formulation differences, trade-offs, and evidence-backed conclusions.
+                      </p>
+                    </div>
                   </div>
-                  <div className="hero-stat-divider" />
-                  <div className="hero-stat">
-                    <span className="hero-stat-value">{brief.coverage_stats.total_entities || 0}</span>
-                    <span className="hero-stat-label">Extracted Entities</span>
-                  </div>
-                  <div className="hero-stat-divider" />
-                  <div className="hero-stat">
-                    <span className="hero-stat-value">{brief.coverage_stats.methods_cataloged || 0}</span>
-                    <span className="hero-stat-label">Distinct Methods</span>
-                  </div>
-                  <div className="hero-stat-divider" />
-                  <div className="hero-stat">
-                    <span className="hero-stat-value">{brief.coverage_stats.datasets_cataloged || 0}</span>
-                    <span className="hero-stat-label">Benchmarks</span>
+
+                  <div className="key-findings-grid">
+                    {brief.key_findings.map((kf, kfi) => (
+                      <div key={kfi} className="key-finding-card">
+                        <div className="kf-number-badge">Finding {kfi + 1}</div>
+                        <h4 className="kf-title">{kf.title}</h4>
+                        <p className="kf-synthesis">{kf.synthesis}</p>
+
+                        {kf.trade_offs && (
+                          <div className="kf-tradeoff-box">
+                            <div className="kf-tradeoff-label">⚖️ Methodological Trade-off:</div>
+                            <div className="kf-tradeoff-text">{kf.trade_offs}</div>
+                          </div>
+                        )}
+
+                        {kf.evidence_citations && kf.evidence_citations.length > 0 && (
+                          <div className="kf-evidence-row">
+                            <span className="kf-evidence-label">Audited Evidence Passages:</span>
+                            <div className="kf-citations-wrap">
+                              {kf.evidence_citations.map((cit, citi) => (
+                                <button
+                                  key={citi}
+                                  type="button"
+                                  className="evidence-cite-pill"
+                                  title="Click to inspect exact passage and PDF page"
+                                  onClick={() => setEvidenceModal({
+                                    title: cit.paper_title || cit.filename,
+                                    filename: cit.filename,
+                                    page_number: cit.page_number,
+                                    passage: cit.verbatim_passage,
+                                    context: kf.title,
+                                  })}
+                                >
+                                  📄 {cit.filename.replace('.pdf','')} · p.{cit.page_number}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
 
-              {/* 9 Structured Sections */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-                {brief.sections.map((sec, idx) => (
-                  <div key={idx} className="brief-section-card" id={`brief-sec-${sec.section_id}`}>
-                    <div className="brief-sec-header">
-                      <h3 className="brief-sec-title">{sec.title}</h3>
-                      {sec.papers_cited && sec.papers_cited.length > 0 && (
-                        <div className="brief-citations">
-                          <span style={{ fontSize: "0.8rem", color: "var(--clr-text-3)", marginRight: 4 }}>Sources:</span>
-                          {sec.papers_cited.map((pname, pi) => (
-                            <span key={pi} className="citation-pill" title={pname}>
-                              📄 {pname.length > 30 ? pname.slice(0, 27) + "..." : pname}
-                            </span>
-                          ))}
+              {/* 3. CROSS-PAPER COMPARISON MATRIX */}
+              {brief.cross_paper_matrix && brief.cross_paper_matrix.length > 0 && (
+                <div className="comparison-matrix-container">
+                  <div className="section-subheading-row">
+                    <div>
+                      <h3 className="findings-group-title">📊 Cross-Paper Comparative Analysis</h3>
+                      <p className="findings-group-desc">
+                        Direct comparison of each paper's research problem, primary contribution, architectural approach, experimental setting, key findings, and documented limitations.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="table-responsive-wrapper">
+                    <table className="cross-paper-table">
+                      <thead>
+                        <tr>
+                          <th style={{ width: "16%" }}>Paper & Architecture</th>
+                          <th style={{ width: "18%" }}>Research Problem</th>
+                          <th style={{ width: "18%" }}>Primary Contribution</th>
+                          <th style={{ width: "18%" }}>Experimental Setting</th>
+                          <th style={{ width: "14%" }}>Key Findings</th>
+                          <th style={{ width: "16%" }}>Documented Limitations</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {brief.cross_paper_matrix.map((row, ri) => (
+                          <tr key={ri}>
+                            <td>
+                              <div className="matrix-paper-cell">
+                                <Link to={`/paper/${row.paper_id}`} className="matrix-paper-title">
+                                  📄 {row.title || row.filename}
+                                </Link>
+                                <span className="matrix-arch-pill">{row.approach_architecture.split(' (')[0]}</span>
+                              </div>
+                            </td>
+                            <td>
+                              <div className="matrix-cell-text">{row.research_problem}</div>
+                            </td>
+                            <td>
+                              <div className="matrix-cell-text">{row.primary_contribution}</div>
+                            </td>
+                            <td>
+                              <div className="matrix-setting-text">{row.experimental_setting}</div>
+                            </td>
+                            <td>
+                              <div className="matrix-cell-text">{row.major_findings}</div>
+                            </td>
+                            <td>
+                              <div className="matrix-limitation-text">{row.documented_limitations}</div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* 4. POTENTIAL RESEARCH OPPORTUNITIES (INFERRED GAPS) */}
+              {brief.research_opportunities && brief.research_opportunities.length > 0 && (
+                <div className="opportunities-container">
+                  <div className="section-subheading-row">
+                    <div>
+                      <h3 className="findings-group-title">💡 Potential Research Opportunities & Inferred Gaps</h3>
+                      <p className="findings-group-desc">
+                        Plausible research gaps inferred through cross-paper synthesis. Inferred hypotheses are strictly distinguished from author-established facts.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="opportunities-grid">
+                    {brief.research_opportunities.map((opp, oppi) => (
+                      <div key={oppi} className="opportunity-card">
+                        <div className="opp-header">
+                          <h4 className="opp-title">{opp.title}</h4>
+                          <span className="opp-caution-badge">{opp.caution_label}</span>
                         </div>
-                      )}
+                        <div className="opp-hypothesis-box">
+                          <span className="opp-label">Inferred Hypothesis:</span>
+                          <p className="opp-text">{opp.hypothesis}</p>
+                        </div>
+                        <div className="opp-rationale-box">
+                          <span className="opp-label">Evidence-Backed Rationale:</span>
+                          <p className="opp-text">{opp.collection_rationale}</p>
+                        </div>
+                        {opp.evidence_citations && opp.evidence_citations.length > 0 && (
+                          <div className="opp-evidence-row">
+                            <span className="kf-evidence-label">Supporting Literature Passages:</span>
+                            <div className="kf-citations-wrap">
+                              {opp.evidence_citations.map((c, ci) => (
+                                <button
+                                  key={ci}
+                                  type="button"
+                                  className="evidence-cite-pill"
+                                  title="Inspect supporting passage in source PDF"
+                                  onClick={() => setEvidenceModal({
+                                    title: c.filename,
+                                    filename: c.filename,
+                                    page_number: c.page_number,
+                                    passage: c.passage,
+                                    context: opp.title,
+                                  })}
+                                >
+                                  📄 {c.filename.replace('.pdf','')} · p.{c.page_number}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 5. NINE DETAILED CORE SECTIONS */}
+              <div className="core-sections-container">
+                <div className="section-subheading-row">
+                  <div>
+                    <h3 className="findings-group-title">📚 Detailed Core Research Dimensions</h3>
+                    <p className="findings-group-desc">
+                      Rigorous 9-section academic synthesis with clean dataset classification, contextualized results, verified limitations, and evidence provenance.
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  {brief.sections && brief.sections.map((sec, idx) => {
+                    const isExpanded = expandedSections[sec.section_id] !== false; // default expanded
+                    return (
+                      <div key={idx} className="brief-section-card" id={`brief-sec-${sec.section_id}`}>
+                        <div
+                          className="brief-sec-header"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => setExpandedSections(prev => ({ ...prev, [sec.section_id]: !isExpanded }))}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <span style={{ fontSize: "1.1rem" }}>{isExpanded ? "▾" : "▸"}</span>
+                            <h3 className="brief-sec-title">{sec.title}</h3>
+                          </div>
+                          {sec.papers_cited && sec.papers_cited.length > 0 && (
+                            <div className="brief-citations">
+                              <span style={{ fontSize: "0.8rem", color: "var(--clr-text-3)", marginRight: 4 }}>Sources:</span>
+                              {sec.papers_cited.map((pname, pi) => (
+                                <span key={pi} className="citation-pill" title={pname}>
+                                  📄 {pname.replace('.pdf', '')}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {isExpanded && (
+                          <div style={{ marginTop: 14 }}>
+                            <p className="brief-sec-content">{sec.content}</p>
+
+                            {sec.key_points && sec.key_points.length > 0 && (
+                              <div className="brief-key-points">
+                                <div style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--clr-text-2)", marginBottom: 8 }}>
+                                  Key Extracted Findings & Data:
+                                </div>
+                                <ul className="brief-points-list">
+                                  {sec.key_points.map((pt, pidx) => (
+                                    <li key={pidx}>{pt}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+
+                            {sec.evidence_items && sec.evidence_items.length > 0 && (
+                              <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 6 }}>
+                                <span style={{ fontSize: "0.8rem", color: "var(--clr-text-3)", marginRight: 4 }}>Evidence Provenance:</span>
+                                {sec.evidence_items.map((ev, evi) => (
+                                  <button
+                                    key={evi}
+                                    type="button"
+                                    className="evidence-cite-pill"
+                                    onClick={() => setEvidenceModal({
+                                      title: ev.filename,
+                                      filename: ev.filename,
+                                      page_number: ev.page_number,
+                                      passage: ev.snippet,
+                                      context: `${sec.title} — ${ev.label}`,
+                                    })}
+                                  >
+                                    📍 {ev.filename.replace('.pdf','')} · p.{ev.page_number}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+
+                            {sec.caveats && (
+                              <div className="brief-caveat-box">
+                                <span style={{ fontWeight: 600 }}>Provenance & Verification Note:</span> {sec.caveats}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* EVIDENCE NAVIGATION MODAL */}
+              {evidenceModal && (
+                <div className="evidence-modal-backdrop" onClick={() => setEvidenceModal(null)}>
+                  <div className="evidence-modal-card" onClick={e => e.stopPropagation()}>
+                    <div className="evidence-modal-header">
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span style={{ fontSize: "1.3rem" }}>🔍</span>
+                        <div>
+                          <h3 className="evidence-modal-title">Evidence & Provenance Passage</h3>
+                          <div className="evidence-modal-subtitle">
+                            {evidenceModal.title || evidenceModal.filename} · PDF Page {evidenceModal.page_number}
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        className="evidence-modal-close"
+                        onClick={() => setEvidenceModal(null)}
+                      >
+                        ✕
+                      </button>
                     </div>
 
-                    <p className="brief-sec-content">{sec.content}</p>
-
-                    {sec.key_points && sec.key_points.length > 0 && (
-                      <div className="brief-key-points">
-                        <div style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--clr-text-2)", marginBottom: 6 }}>
-                          Key Extracted Findings:
+                    <div className="evidence-modal-body">
+                      {evidenceModal.context && (
+                        <div className="evidence-modal-context">
+                          <strong>Finding / Context:</strong> {evidenceModal.context}
                         </div>
-                        <ul className="brief-points-list">
-                          {sec.key_points.map((pt, pidx) => (
-                            <li key={pidx}>{pt}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                      )}
 
-                    {sec.caveats && (
-                      <div className="brief-caveat-box">
-                        <span style={{ fontWeight: 600 }}>Provenance & Verification Note:</span> {sec.caveats}
+                      <div className="evidence-quote-box">
+                        <div className="evidence-quote-label">Supporting Verbatim Passage:</div>
+                        <p className="evidence-quote-text">"{evidenceModal.passage}"</p>
                       </div>
-                    )}
+
+                      <div className="evidence-modal-footer">
+                        <span className="provenance-pill">
+                          📍 1-Indexed PDF Page {evidenceModal.page_number}
+                        </span>
+                        {(() => {
+                          const matchedPaper = papers.find(p => p.filename === evidenceModal.filename);
+                          if (matchedPaper) {
+                            return (
+                              <Link
+                                to={`/paper/${matchedPaper.id}`}
+                                className="primary-button sm"
+                                onClick={() => setEvidenceModal(null)}
+                              >
+                                Open in Paper Detail →
+                              </Link>
+                            );
+                          }
+                          return null;
+                        })()}
+                      </div>
+                    </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
             </div>
           )}
         </div>

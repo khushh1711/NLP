@@ -34,7 +34,7 @@ def _fetch_workspace_data(workspace_id: str):
         
         paper_ids = [p["id"] for p in papers]
         if not paper_ids:
-            return ws, [], [], []
+            return ws, [], [], [], []
             
         placeholders = ",".join("?" for _ in paper_ids)
         
@@ -47,8 +47,13 @@ def _fetch_workspace_data(workspace_id: str):
             f"SELECT * FROM summaries WHERE paper_id IN ({placeholders})",
             paper_ids
         ).fetchall()
+
+        pages = conn.execute(
+            f"SELECT paper_id, page_number, text FROM paper_pages WHERE paper_id IN ({placeholders}) ORDER BY paper_id, page_number ASC",
+            paper_ids
+        ).fetchall()
         
-    return ws, rows_to_list(papers), rows_to_list(fields), rows_to_list(summaries)
+    return ws, rows_to_list(papers), rows_to_list(fields), rows_to_list(summaries), rows_to_list(pages)
 
 
 @router.post("/{workspace_id}/analyze-collection", response_model=CollectionBriefOut)
@@ -57,7 +62,7 @@ def analyze_collection(workspace_id: str):
     Synthesize research brief across all analyzed papers in the workspace.
     Caches result in collection_briefs table.
     """
-    ws, papers, fields, summaries = _fetch_workspace_data(workspace_id)
+    ws, papers, fields, summaries, pages = _fetch_workspace_data(workspace_id)
     rq = ws["research_question"] if ws else ""
     
     brief = generate_collection_brief(
@@ -66,6 +71,7 @@ def analyze_collection(workspace_id: str):
         papers=papers,
         extracted_fields=fields,
         summaries=summaries,
+        pages=pages,
     )
     
     now = datetime.utcnow().isoformat()

@@ -209,6 +209,32 @@ def test_collection_synthesis_multi_paper_generates_9_sections():
         assert expected_id in sec_ids
 
 
+def test_collection_synthesis_produces_rich_synthesis_and_matrix():
+    from modules.collection_synthesis import generate_collection_brief
+    papers = [
+        {"id": "p1", "filename": "attention.pdf", "analysis_status": "completed", "page_count": 10, "word_count": 4000},
+        {"id": "p2", "filename": "bert.pdf", "analysis_status": "completed", "page_count": 12, "word_count": 5000},
+    ]
+    fields = [
+        {"paper_id": "p1", "field_type": "METHOD", "value": "Transformer", "page_number": 1},
+        {"paper_id": "p1", "field_type": "DATASET", "value": "WMT 2014", "page_number": 6},
+        {"paper_id": "p2", "field_type": "METHOD", "value": "BERT", "page_number": 1},
+        {"paper_id": "p2", "field_type": "DATASET", "value": "GLUE", "page_number": 4},
+    ]
+    brief = generate_collection_brief("ws-1", "Compare Transformer architectures", papers, fields, [])
+    assert brief["executive_synthesis"] is not None
+    assert len(brief["executive_synthesis"]) > 50
+    assert len(brief["key_findings"]) >= 3
+    for kf in brief["key_findings"]:
+        assert "title" in kf and "synthesis" in kf and "trade_offs" in kf and "evidence_citations" in kf
+    assert len(brief["cross_paper_matrix"]) == 2
+    for row in brief["cross_paper_matrix"]:
+        assert "research_problem" in row and "primary_contribution" in row and "approach_architecture" in row
+    assert len(brief["research_opportunities"]) >= 2
+    for opp in brief["research_opportunities"]:
+        assert "Inferred" in opp["caution_label"]
+
+
 # ─── Module E: Collection Q&A tests ───────────────────────────────────────────
 
 def test_collection_qa_finds_evidence_and_cites():

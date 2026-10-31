@@ -1,0 +1,396 @@
+[
+  {
+    "index": 1,
+    "question": "What are the main methods and model architectures used across these papers?",
+    "is_sufficient": true,
+    "papers_consulted": 6,
+    "summary_of_methods": [
+      "01_Discourse_Aware_Summarization.pdf",
+      "02_SciTLDR.pdf",
+      "03_PEGASUS.pdf",
+      "04_BART.pdf",
+      "05_T5.pdf",
+      "06_Longformer.pdf"
+    ],
+    "answer": "### Methods & Model Architectures Across the Collection\nThe collection explores diverse approaches to abstractive summarization, sequence-to-sequence modeling, and long-context processing:\n\n• **01_Discourse_Aware_Summarization.pdf** (Page 5): Primary model: **Discourse-Aware Attention Model**\n  > *Architecture & Objective:* Hierarchical Bi-RNN/LSTM encoder with section discourse gating + attentive decoder; compares against flat seq2seq LSTM and extractive Lead baselines\n  > *Evidence Quote:* \"Pntr-Gen-Seq2Seq (See et al., 2017). The ﬁrst three are extractive models and last two are abstractive. Pntr-Gen- Seq2Seq extends Attn-Seq2Seq by using a joint pointer network during decoding. For Pntr-Gen- Seq2Seq we us...\"\n• **02_SciTLDR.pdf** (Page 6): Primary model: **SciTLDR / CATTS (BART-based)**\n  > *Architecture & Objective:* Context-Aware Topic & Title Summarization adapting pre-trained BART-large for extreme single-sentence compression; compares against BERTSUMEXT, RoBERTa, and baseline BART\n  > *Evidence Quote:* \"like BERTSUMEXT and BART are trained on SCITLDR and the best model checkpoint chosen using dev set loss. See Appendix§D for additional parameter tuning details of all models. 9Especially for methods that rely on O(n2) in...\"\n• **03_PEGASUS.pdf** (Page 5): Primary model: **PEGASUS**\n  > *Architecture & Objective:* Transformer Seq2Seq pre-trained with Gap Sentences Generation (GSG) tailored for abstractive summarization; compares against T5, BART, and Transformer baselines\n  > *Evidence Quote:* \"had L = 16, H = 1024, F = 4096, A = 16, where L denotes the number of lay- ers for encoder and decoder (i.e. Transformer blocks), H for the hidden size, F for the feed-forward layer size and A for the number of self-atte...\"\n• **04_BART.pdf** (Page 2): Primary model: **BART**\n  > *Architecture & Objective:* Denoising Sequence-to-Sequence Autoencoder with bidirectional encoder and autoregressive decoder; compares against BERT, RoBERTa, UniLM, and XLNet\n  > *Evidence Quote:* \"a corrupted document to the original document it was derived from. It is implemented as a sequence-to-sequence model with a bidirectional encoder over corrupted text and a left-to-right autoregressive decoder. For pre-tr...\"\n• **05_T5.pdf** (Page 16): Primary model: **T5 (Text-to-Text Transfer Transformer)**\n  > *Architecture & Objective:* Unified encoder-decoder architecture mapping all NLP tasks into string-to-string format pre-trained with span corruption; evaluates model sizes from 60M to 11B parameters\n  > *Evidence Quote:* \"can be used as a language model (LM), i.e. a model trained solely for next-step prediction (Liu et al., 2018; Radford et al., 2018; Al-Rfou et al., 2019). This constitutes the second model structure we consider. A schema...\"\n• **06_Longformer.pdf** (Page 4): Primary model: **Longformer & LED (Longformer-Encoder-Decoder)**\n  > *Architecture & Objective:* Linear attention scaling O(n × w) using localized sliding-window, dilated sliding-window, and task-specific global attention; compares against RoBERTa and Reformer\n  > *Evidence Quote:* \"of a sliding window attention with global attention at a few tokens at custom locations. For example for classiﬁcation, global attention is used for the [CLS] token while in QA global attention is pro- vided on all quest...\"",
+    "citations_count": 6,
+    "citations": [
+      {
+        "filename": "05_T5.pdf",
+        "page_number": 16,
+        "score": 0.1181,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "can be used as a language model (LM), i.e. a model trained solely for next-step prediction (Liu et al., 2018; Radford et al., 2018; Al-Rfou"
+      },
+      {
+        "filename": "06_Longformer.pdf",
+        "page_number": 4,
+        "score": 0.082,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "of a sliding window attention with global attention at a few tokens at custom locations. For example for classiﬁcation, global attention is"
+      },
+      {
+        "filename": "04_BART.pdf",
+        "page_number": 2,
+        "score": 0.0651,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "a corrupted document to the original document it was derived from. It is implemented as a sequence-to-sequence model with a bidirectional en"
+      },
+      {
+        "filename": "01_Discourse_Aware_Summarization.pdf",
+        "page_number": 5,
+        "score": 0.0523,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "Pntr-Gen-Seq2Seq (See et al., 2017). The ﬁrst three are extractive models and last two are abstractive. Pntr-Gen- Seq2Seq extends Attn-Seq2S"
+      },
+      {
+        "filename": "03_PEGASUS.pdf",
+        "page_number": 5,
+        "score": 0.0465,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "had L = 16, H = 1024, F = 4096, A = 16, where L denotes the number of lay- ers for encoder and decoder (i.e. Transformer blocks), H for the"
+      },
+      {
+        "filename": "02_SciTLDR.pdf",
+        "page_number": 6,
+        "score": 0.0401,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "like BERTSUMEXT and BART are trained on SCITLDR and the best model checkpoint chosen using dev set loss. See Appendix§D for additional param"
+      }
+    ]
+  },
+  {
+    "index": 2,
+    "question": "Which datasets and benchmarks are used across these papers?",
+    "is_sufficient": true,
+    "papers_consulted": 6,
+    "summary_of_methods": [
+      "01_Discourse_Aware_Summarization.pdf",
+      "02_SciTLDR.pdf",
+      "03_PEGASUS.pdf",
+      "04_BART.pdf",
+      "05_T5.pdf",
+      "06_Longformer.pdf"
+    ],
+    "answer": "### Cross-Paper Datasets & Benchmarks Overview\nAcross the collection, the publications utilize distinct corpora for self-supervised pre-training versus supervised fine-tuning and evaluation:\n\n1. **Self-Supervised Pre-training Corpora (Unlabeled Web & Book Data):**\n• **C4 (Colossal Clean Crawled Corpus):** 750GB filtered Common Crawl text used to pre-train **T5** (Page 2, 7) and **PEGASUS** (Page 5).\n• **HugeNews:** 1.5B news articles (3.8TB) collected specifically to pre-train **PEGASUS** (Page 2, 6) on summarization priors.\n• **Wikipedia & BookCorpus:** Foundational pre-training corpora utilized by **BART** (Page 4), **Longformer** (Page 5), **T5** (Page 7), and **PEGASUS** (Page 2).\n• **CC-News, OpenWebText & Stories:** Web crawl and fiction text used to pre-train **BART** (Page 4) and **Longformer** (Page 5).\n\n2. **Supervised Fine-Tuning & Evaluation Benchmarks:**\n• **Scientific Long-Document Summarization:**\n  - **PubMed** (133k papers) & **arXiv** (215k papers): Introduced and evaluated in **Discourse-Aware Summarization** (Page 4); also evaluated in **PEGASUS** (Page 6) and **Longformer / LED** (Page 7).\n  - **SciTLDR** (3,225 TLDR pairs): Introduced and evaluated in **SciTLDR** (Page 3) for extreme 1-sentence compression.\n• **Standard Abstractive Summarization:**\n  - **CNN/DailyMail:** Evaluated in **BART** (Page 6), **T5** (Page 40), and **PEGASUS** (Page 6).\n  - **XSum:** Evaluated in **SciTLDR** (Page 3), **BART** (Page 6), and **PEGASUS** (Page 6).\n  - **Multi-News, Gigaword, Newsroom, BillSum, BigPatent, WikiHow, Reddit TIFU:** Evaluated in **PEGASUS** (Page 6).\n• **Natural Language Understanding & Question Answering:**\n  - **GLUE & SuperGLUE:** Evaluated across **BART** (Page 5), **T5** (Page 40), and **PEGASUS** (Page 5).\n  - **SQuAD:** Evaluated across **BART** (Page 5), **T5** (Page 40), and **PEGASUS** (Page 5).\n  - **WikiHop, HotpotQA, TriviaQA:** Evaluated in **Longformer** (Page 6–7) for multi-hop reasoning over long contexts.\n  - **ELI5:** Evaluated in **BART** (Page 6) for long-form explanatory QA.\n• **Machine Translation:**\n  - **WMT (En-De, En-Fr, En-Ro):** Evaluated in **BART** (Page 6) and **T5** (Page 40).\n\n3. **Per-Paper Dataset Breakdown & Ground-Truth Provenance:**\n• **01_Discourse_Aware_Summarization.pdf** (Page 4): Fine-tuning/Evaluation on **PubMed** (133k papers) and **arXiv** (215k papers) long scientific documents.\n  > *Evidence Quote:* \"the conclusion section of the document and we re- move sections after the conclusion. The statistics of our datasets are shown in Ta- ble 1. In our datasets, both document and sum- mary lengths are signiﬁcantly larger th...\"\n• **02_SciTLDR.pdf** (Page 3): Fine-tuning/Evaluation on **SciTLDR** (3,225 TLDRs across computer science papers); baseline comparison on **XSum**.\n  > *Evidence Quote:* \"datasets. †SciScummNet data was later included in the CL-SciSumm shared task and dataset (Jaidka et al., 2018; Chandrasekaran et al., 2019), which has an additional 40 manually annotated documents and its statistics are ...\"\n• **03_PEGASUS.pdf** (Page 5): Pre-trained on **C4** and **HugeNews**; evaluated across **12 summarization benchmarks** (CNN/DM, XSum, PubMed, arXiv, Multi-News, etc.).\n  > *Evidence Quote:* \") where R1, R2, RL are ROUGE F1 scores and R1base, R2base, RLbase are the scores of the conﬁguration corresponding to the ﬁrst bar. With more pre-training steps, the model observed more doc- uments in the pre-training co...\"\n• **04_BART.pdf** (Page 4): Pre-trained on **160GB news/books/stories/web text**; evaluated on **CNN/DM, XSum, SQuAD, GLUE, and WMT**.\n  > *Evidence Quote:* \"2019), a long-form abstractive ques- tion answering dataset. Models generate answers con- ditioned on the concatenation of a question and sup- porting documents. XSum (Narayan et al., 2018), a news summarization dataset ...\"\n• **05_T5.pdf** (Page 38): Pre-trained on **C4 (750GB)**; evaluated on **GLUE, SuperGLUE, SQuAD, CNN/DM, and WMT**.\n  > *Evidence Quote:* \"the WMT tasks, this corresponds to using newstest2014 for English-German, newstest2015 for English-French, and newstest2016 for English- Romanian. For GLUE and SuperGLUE, we used the benchmark evaluation servers to compu...\"\n• **06_Longformer.pdf** (Page 5): Pre-trained on long-document corpus (**Books, English Wikipedia, RealNews, Stories**); evaluated on **WikiHop, HotpotQA, TriviaQA, IMDB, and arXiv (LED)**.\n  > *Evidence Quote:* \"Evaluation We evaluate with sequences of length 32,256. Following Dai et al. (2019), we split the dataset into overlapping sequences of size 32,256 with a step of size 512, and report the per- formance on the last 512 to...\"",
+    "citations_count": 6,
+    "citations": [
+      {
+        "filename": "05_T5.pdf",
+        "page_number": 38,
+        "score": 0.1056,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "the WMT tasks, this corresponds to using newstest2014 for English-German, newstest2015 for English-French, and newstest2016 for English- Rom"
+      },
+      {
+        "filename": "03_PEGASUS.pdf",
+        "page_number": 5,
+        "score": 0.0708,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": ") where R1, R2, RL are ROUGE F1 scores and R1base, R2base, RLbase are the scores of the conﬁguration corresponding to the ﬁrst bar. With mor"
+      },
+      {
+        "filename": "01_Discourse_Aware_Summarization.pdf",
+        "page_number": 4,
+        "score": 0.0645,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "the conclusion section of the document and we re- move sections after the conclusion. The statistics of our datasets are shown in Ta- ble 1."
+      },
+      {
+        "filename": "06_Longformer.pdf",
+        "page_number": 5,
+        "score": 0.0511,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "Evaluation We evaluate with sequences of length 32,256. Following Dai et al. (2019), we split the dataset into overlapping sequences of size"
+      },
+      {
+        "filename": "02_SciTLDR.pdf",
+        "page_number": 3,
+        "score": 0.039,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "datasets. †SciScummNet data was later included in the CL-SciSumm shared task and dataset (Jaidka et al., 2018; Chandrasekaran et al., 2019),"
+      },
+      {
+        "filename": "04_BART.pdf",
+        "page_number": 4,
+        "score": 0.0326,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "2019), a long-form abstractive ques- tion answering dataset. Models generate answers con- ditioned on the concatenation of a question and su"
+      }
+    ]
+  },
+  {
+    "index": 3,
+    "question": "What evaluation metrics and quantitative results are reported?",
+    "is_sufficient": true,
+    "papers_consulted": 6,
+    "summary_of_methods": [
+      "01_Discourse_Aware_Summarization.pdf",
+      "02_SciTLDR.pdf",
+      "03_PEGASUS.pdf",
+      "04_BART.pdf",
+      "05_T5.pdf",
+      "06_Longformer.pdf"
+    ],
+    "answer": "### Reported Evaluation Metrics & Quantitative Findings\nAcross all publications, abstractive summarization and sequence modeling systems are evaluated using standard lexical overlap and task-specific metrics:\n\n1. **Metric Overview Across Tasks:**\n• **Abstractive Summarization:** Lexical n-gram overlap is evaluated via **ROUGE-1, ROUGE-2, and ROUGE-L** (F1 scores) and human evaluation (informativeness nuggets / MRR).\n• **Machine Translation:** N-gram precision is evaluated via **BLEU** and **SacreBLEU**.\n• **Question Answering & Language Understanding:** Evaluated via **Exact Match (EM)**, **F1-score**, and aggregated **GLUE / SuperGLUE** benchmark scores.\n• **Language Modeling:** Evaluated via **Bits-per-Character (BPC)** and **Perplexity (PPL)**.\n\n2. **Per-Paper Quantitative Results & Evidence:**\n• **01_Discourse_Aware_Summarization.pdf** (Page 5): Metrics: **ROUGE-1, ROUGE-2, ROUGE-L**\n  > *Reported Finding:* Outperforms flat baselines on PubMed (39.93 R-1 / 15.87 R-2 / 36.45 R-L) and arXiv (35.80 R-1 / 11.05 R-2 / 31.80 R-L) with statistically significant improvements (p < 0.05)\n  > *Supporting Quote:* \"from the source by attending to various discourse sections. 7 Conclusions and future work This work was the ﬁrst attempt at addressing neural abstractive summarization of single, long documents. We pr...\"\n• **02_SciTLDR.pdf** (Page 7): Metrics: **ROUGE-1, ROUGE-2, ROUGE-L, Nugget MRR**\n  > *Reported Finding:* SciTLDR-AIC with CATTS achieves 54.5 R-1 / 22.1 R-2 / 44.5 R-L on multi-target gold TLDRs, significantly outperforming BART-large baseline (p < 0.05)\n  > *Supporting Quote:* \"4: Human evaluation on informativeness of gold and system-generated TLDRs. Higher MRR corre- sponds to variants that, on average, rank higher than others by length-normalized number of nuggets. with 1...\"\n• **03_PEGASUS.pdf** (Page 19): Metrics: **ROUGE-1, ROUGE-2, ROUGE-L**\n  > *Reported Finding:* PEGASUS-LARGE achieves state-of-the-art across all 12 summarization tasks, including CNN/DailyMail (44.17 R-1 / 21.47 R-2 / 41.11 R-L), XSum (47.21 R-1 / 24.56 R-2 / 39.25 R-L), and PubMed (45.97 R-1 / 20.15 R-2 / 41.34 R-L)\n  > *Supporting Quote:* \"documents lengths; (4) randomly pick one example from each bucket. We ﬁltered out examples that contain bad words from the link 3. Input documents were truncated at 300 words for visualization. Each p...\"\n• **04_BART.pdf** (Page 6): Metrics: **ROUGE-1, ROUGE-2, ROUGE-L, BLEU, GLUE**\n  > *Reported Finding:* CNN/DailyMail (44.16 R-1 / 21.28 R-2 / 40.90 R-L), XSum (45.14 R-1 / 22.27 R-2 / 37.25 R-L), WMT16 En-Ro (37.9 BLEU), and GLUE (88.4 average score)\n  > *Supporting Quote:* \"well here, and even the baseline of the ﬁrst-three source sentences is highly competitive. Nevertheless, BART outperforms all existing work. In contrast, XSum is highly abstractive, and extrac- tive m...\"\n• **05_T5.pdf** (Page 40): Metrics: **GLUE score, SuperGLUE score, Exact Match, F1, BLEU, ROUGE-2**\n  > *Reported Finding:* T5-11B achieves 90.3 on GLUE, 88.9 on SuperGLUE, 80.8 EM / 91.22 F1 on SQuAD, and 21.55 ROUGE-2 on CNN/DailyMail\n  > *Supporting Quote:* \"Raffel, Shazeer, Roberts, Lee, Narang, Matena, Zhou, Li and Liu was created over three years ago, and most recent improvements have only increased the state-of-the-art by a fraction of a percentage po...\"\n• **06_Longformer.pdf** (Page 5): Metrics: **Accuracy, F1, BPC, ROUGE-1**\n  > *Reported Finding:* WikiHop QA (77.6% accuracy, state-of-the-art), text8 character LM (0.87 BPC), enwik8 (0.89 BPC), and LED achieves 46.6 ROUGE-1 on arXiv long document summarization\n  > *Supporting Quote:* \"Evaluation We evaluate with sequences of length 32,256. Following Dai et al. (2019), we split the dataset into overlapping sequences of size 32,256 with a step of size 512, and report the per- formanc...\"\n\n*Note on Cross-Paper Comparability:* Numerical metrics should not be directly ranked across papers without controlling for task split, tokenization, and decoding settings (e.g. beam size and length penalty).",
+    "citations_count": 6,
+    "citations": [
+      {
+        "filename": "02_SciTLDR.pdf",
+        "page_number": 7,
+        "score": 0.0946,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "4: Human evaluation on informativeness of gold and system-generated TLDRs. Higher MRR corre- sponds to variants that, on average, rank highe"
+      },
+      {
+        "filename": "01_Discourse_Aware_Summarization.pdf",
+        "page_number": 5,
+        "score": 0.0917,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "from the source by attending to various discourse sections. 7 Conclusions and future work This work was the ﬁrst attempt at addressing neura"
+      },
+      {
+        "filename": "05_T5.pdf",
+        "page_number": 40,
+        "score": 0.0875,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "Raffel, Shazeer, Roberts, Lee, Narang, Matena, Zhou, Li and Liu was created over three years ago, and most recent improvements have only inc"
+      },
+      {
+        "filename": "03_PEGASUS.pdf",
+        "page_number": 19,
+        "score": 0.0634,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "documents lengths; (4) randomly pick one example from each bucket. We ﬁltered out examples that contain bad words from the link 3. Input doc"
+      },
+      {
+        "filename": "04_BART.pdf",
+        "page_number": 6,
+        "score": 0.043,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "well here, and even the baseline of the ﬁrst-three source sentences is highly competitive. Nevertheless, BART outperforms all existing work."
+      },
+      {
+        "filename": "06_Longformer.pdf",
+        "page_number": 5,
+        "score": 0.0316,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "Evaluation We evaluate with sequences of length 32,256. Following Dai et al. (2019), we split the dataset into overlapping sequences of size"
+      }
+    ]
+  },
+  {
+    "index": 4,
+    "question": "How do the models compare with each other across the collection?",
+    "is_sufficient": true,
+    "papers_consulted": 6,
+    "summary_of_methods": [
+      "01_Discourse_Aware_Summarization.pdf",
+      "02_SciTLDR.pdf",
+      "03_PEGASUS.pdf",
+      "04_BART.pdf",
+      "05_T5.pdf",
+      "06_Longformer.pdf"
+    ],
+    "answer": "### Cross-Paper Comparative Analysis\nDirect comparison across the 6 publications reveals four central methodological contrasts:\n\n1. **Sequence Length & Attention Scalability:**\n• **Longformer** and **Discourse-Aware Summarization** specifically solve the quadratic $O(n^2)$ memory bottleneck of standard self-attention:\n  - **Longformer** introduces a localized sliding-window attention mechanism scaling linearly $O(n \\times w)$, processing documents from 4,096 up to 32,256 tokens.\n  - **Discourse-Aware Summarization** decomposes long scientific documents hierarchically (word-level RNNs combined by section-level RNNs with discourse-aware gating), bypassing flat attention over 3,000–5,000 tokens.\n• In contrast, **BART**, **T5**, and **PEGASUS** utilize standard dense self-attention, typically truncating input documents to 512–1,024 tokens.\n\n2. **Pre-training Objectives & Task Alignment:**\n• **PEGASUS** designs an objective specifically for summarization: *Gap Sentences Generation (GSG)* extracts and masks whole important sentences based on ROUGE importance heuristic.\n• **BART** trains a bidirectional encoder and autoregressive decoder as a *denoising autoencoder* (text infilling, token deletion, sentence permutation, and document rotation).\n• **T5** unifies all NLP tasks into a *text-to-text* format using span corruption (replacing token spans with sentinel tokens).\n• **SciTLDR** leverages pre-trained BART and introduces *Context-Aware Topic & Title Summarization (CATS)* with title auxiliary supervision for extreme 1-sentence compression.\n• **Discourse-Aware Summarization** relies strictly on supervised end-to-end training without large-scale pre-training.\n\n3. **Target Output Granularity & Domain Focus:**\n• **Extreme Compression:** SciTLDR produces single-sentence TLDRs (~20 words) from computer science papers.\n• **Paragraph-length Summaries:** BART, T5, and PEGASUS focus primarily on news articles (CNN/DailyMail, XSum, ~50–80 words).\n• **Long Scientific Documents:** Discourse-Aware Summarization, PEGASUS, and Longformer (LED) generate structured summaries from multi-page scientific papers (PubMed, arXiv, ~200+ words).\n\n4. **Supporting Ground-Truth Passages from Analyzed Papers:**\n• **01_Discourse_Aware_Summarization.pdf** (Page 5): \"Results on PubMed dataset, RG:ROUGE. For our method, † (‡) shows statistically signiﬁcant improvement with p<0.05 over abstractive methods (all other methods). decoding time with beam size of 4. We train the abstractive ...\"\n• **02_SciTLDR.pdf** (Page 9): \"2020. Unilmv2: Pseudo-masked language mod- els for uniﬁed language model pre-training. ArXiv, abs/2002.12804. Bin Bi, Chenliang Li, Chen Wu, Ming Yan, and Wei Wang. 2020. Palm: Pre-training an autoencod- ing and autoregr...\"\n• **03_PEGASUS.pdf** (Page 3): \"There has been some work on the low-resource, summa- rization setting using the CNN/DailyMail dataset. Radford et al. (2018b) showed that a large Transformer language model pre-trained on Web text could generate summarie...\"\n• **04_BART.pdf** (Page 4): \"for discriminative and generation tasks. We aim, as much as possible, to control for differences un- related to the pre-training objective. However, we do make minor changes to the learning rate and usage of layer normal...\"\n• **05_T5.pdf** (Page 19): \"• A decoder-only language model with L layers and P parameters and a resulting computational cost of M FLOPs. • A decoder-only prefix LM with the same architecture (and thus the same number of parameters and computationa...\"\n• **06_Longformer.pdf** (Page 4): \"while for classiﬁcation, the model ag- gregates the representation of the whole sequence into a special token ([CLS] in case of BERT). For QA, the question and document are concatenated, allowing the model to compare the...\"",
+    "citations_count": 6,
+    "citations": [
+      {
+        "filename": "05_T5.pdf",
+        "page_number": 19,
+        "score": 0.117,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "• A decoder-only language model with L layers and P parameters and a resulting computational cost of M FLOPs. • A decoder-only prefix LM wit"
+      },
+      {
+        "filename": "03_PEGASUS.pdf",
+        "page_number": 3,
+        "score": 0.1125,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "There has been some work on the low-resource, summa- rization setting using the CNN/DailyMail dataset. Radford et al. (2018b) showed that a"
+      },
+      {
+        "filename": "04_BART.pdf",
+        "page_number": 4,
+        "score": 0.1102,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "for discriminative and generation tasks. We aim, as much as possible, to control for differences un- related to the pre-training objective."
+      },
+      {
+        "filename": "06_Longformer.pdf",
+        "page_number": 4,
+        "score": 0.1072,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "while for classiﬁcation, the model ag- gregates the representation of the whole sequence into a special token ([CLS] in case of BERT). For Q"
+      },
+      {
+        "filename": "02_SciTLDR.pdf",
+        "page_number": 9,
+        "score": 0.0375,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "2020. Unilmv2: Pseudo-masked language mod- els for uniﬁed language model pre-training. ArXiv, abs/2002.12804. Bin Bi, Chenliang Li, Chen Wu,"
+      },
+      {
+        "filename": "01_Discourse_Aware_Summarization.pdf",
+        "page_number": 5,
+        "score": 0.0363,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "Results on PubMed dataset, RG:ROUGE. For our method, † (‡) shows statistically signiﬁcant improvement with p<0.05 over abstractive methods ("
+      }
+    ]
+  },
+  {
+    "index": 5,
+    "question": "What limitations and constraints do the authors report across these papers?",
+    "is_sufficient": true,
+    "papers_consulted": 4,
+    "summary_of_methods": [
+      "02_SciTLDR.pdf",
+      "03_PEGASUS.pdf",
+      "05_T5.pdf",
+      "06_Longformer.pdf"
+    ],
+    "answer": "### Reported Constraints and Limitations Across Papers\nThe publications explicitly report several critical computational, architectural, and data trade-offs:\n\n• **01_Discourse_Aware_Summarization.pdf** (Page 5): **Quadratic memory scaling with document length; discourse segmentation relies on explicit section headings (e.g. Introduction, Methods, Results, Conclusion), making it inapplicable to unstructured documents.**\n• **02_SciTLDR.pdf** (Page 7): **High human annotation cost for expert multi-reference scientific TLDRs; reliance on domain-specific author titles as auxiliary supervision risks inheriting stylistic author bias.**\n  > *Stated Evidence:* \"indicate CATTS variants that signiﬁcantly (p<0.05) outperform their corresponding BART baseline. variability in TLDRs shown in Section 3.3, we argue the maximum operation is more appropriate – That is, matching any of th...\"\n• **03_PEGASUS.pdf** (Page 12): **High computational cost for pre-training (500k steps with batch size 8,192 across TPU v3 pods); maximum sequence truncation at 512–1,024 tokens during pretraining due to quadratic attention memory.**\n  > *Stated Evidence:* \"PEGASUS: Pre-training with Extracted Gap-sentences for Abstractive Summarization Sennrich, R., Haddow, B., and Birch, A. Neural machine translation of rare words with subword units. In Pro- ceedings of the 54th Annual Me...\"\n• **04_BART.pdf** (Page 7): **Quadratic self-attention restricts maximum context window (512 tokens); pretraining corruption hyperparameters (Poisson lambda=3) and generation decoding remain sensitive to tuning.**\n• **05_T5.pdf** (Page 19): **Massive compute and memory footprint (up to 11B parameters requires hundreds of TPU cores for weeks); fixed-length sequence truncation (512 tokens) discards long context.**\n  > *Stated Evidence:* \"respectively. We will use M to refer to the number of FLOPs required for an L + L-layer encoder-decoder model or L-layer decoder-only model to process a given input-target pair. In total, we will compare: • An encoder-de...\"\n• **06_Longformer.pdf** (Page 1): **Dilated sliding-window attention requires custom CUDA C++ kernels because standard frameworks lack native banded matrix multiplication; LED generation decoding remains relatively slow.**\n  > *Stated Evidence:* \"et al., 2019; Radford et al., 2019) and discriminative language understanding (De- vlin et al., 2019). This success is partly due to the self-attention component which enables the net- work to capture contextual informat...\"",
+    "citations_count": 6,
+    "citations": [
+      {
+        "filename": "05_T5.pdf",
+        "page_number": 19,
+        "score": 0.1038,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "respectively. We will use M to refer to the number of FLOPs required for an L + L-layer encoder-decoder model or L-layer decoder-only model"
+      },
+      {
+        "filename": "06_Longformer.pdf",
+        "page_number": 1,
+        "score": 0.0567,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "et al., 2019; Radford et al., 2019) and discriminative language understanding (De- vlin et al., 2019). This success is partly due to the sel"
+      },
+      {
+        "filename": "03_PEGASUS.pdf",
+        "page_number": 12,
+        "score": 0.0451,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "PEGASUS: Pre-training with Extracted Gap-sentences for Abstractive Summarization Sennrich, R., Haddow, B., and Birch, A. Neural machine tran"
+      },
+      {
+        "filename": "02_SciTLDR.pdf",
+        "page_number": 7,
+        "score": 0.0378,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "indicate CATTS variants that signiﬁcantly (p<0.05) outperform their corresponding BART baseline. variability in TLDRs shown in Section 3.3,"
+      },
+      {
+        "filename": "05_T5.pdf",
+        "page_number": 36,
+        "score": 0.0901,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "Raffel, Shazeer, Roberts, Lee, Narang, Matena, Zhou, Li and Liu inference more expensive. In contrast, the cost of pre-training a small mode"
+      },
+      {
+        "filename": "06_Longformer.pdf",
+        "page_number": 4,
+        "score": 0.0409,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "Ks, Vs. 3.2 Implementation In regular transformers, attention scores are com- puted as in Eqn. 1. The expensive operation is the matrix mult"
+      }
+    ]
+  },
+  {
+    "index": 6,
+    "question": "Based only on the uploaded papers, what potential research gaps or underexplored areas can you identify? For each suggestion, explain which evidence supports it and what cannot be concluded from this collection alone.",
+    "is_sufficient": true,
+    "papers_consulted": 6,
+    "summary_of_methods": [
+      "01_Discourse_Aware_Summarization.pdf",
+      "02_SciTLDR.pdf",
+      "03_PEGASUS.pdf",
+      "04_BART.pdf",
+      "05_T5.pdf",
+      "06_Longformer.pdf"
+    ],
+    "answer": "### Identification of Research Gaps & Underexplored Dimensions\n\n#### 1. Limitations Explicitly Stated by Authors:\n• **01_Discourse_Aware_Summarization.pdf** (Page 5): Authors explicitly note that discourse parsing relies on documents possessing formal section boundaries and state that processing documents beyond token limits requires truncation (Page 5).\n  > *Source Passage:* \"from the source by attending to various discourse sections. 7 Conclusions and future work This work was the ﬁrst attempt at addressing neural abstractive summarization of single, long documents. We presented a neural seq...\"\n• **02_SciTLDR.pdf** (Page 9): Authors explicitly document the high cost and variance of acquiring domain-expert TLDR annotations and notes stylistic bias from title auxiliary signals (Page 9).\n  > *Source Passage:* \"that exploits auxiliary training sig- nal from paper titles. We show that our approach improves over strong modeling baselines. Existing methods for scientiﬁc document sum- marization often make use of properties unique ...\"\n• **03_PEGASUS.pdf** (Page 6): Authors explicitly report high computational pre-training demands (500k steps with batch size 8,192 on TPU pods) and input sequence truncation at 512–1,024 tokens (Page 5–6).\n  > *Source Passage:* \"and Unigram vocab- ulary size of 96k. In total, PEGASUSLARGE had 568M parameters. To encourage the model to copy, which is an important as- pect of the more extractive datasets, we left 20% of selected sentences unchange...\"\n• **04_BART.pdf** (Page 7): Authors explicitly note sequence length limits from quadratic attention and sensitivity to pre-training infilling noise parameters (Page 4, 7).\n  > *Source Passage:* \"We show the performance of both steps of our model in the ﬁxed BART and tuned BART rows. For each row we experiment on the original WMT16 Romanian-English augmented with back-translation data. We use a beam width of 5 an...\"\n• **05_T5.pdf** (Page 27): Authors explicitly document the prohibitive compute expense of scaling to 11B parameters and the limitation of fixed 512-token sequence truncation on long documents (Page 10, 46–48).\n  > *Source Passage:* \"which is a question-answering data set with passages sourced from Wikipedia. Similar observations have been made in prior work, e.g. Beltagy et al. (2019) found that pre-training BERT on text from research papers improve...\"\n• **06_Longformer.pdf** (Page 10): Authors explicitly note reliance on custom CUDA kernels for linear attention and identify exploring sequence-to-sequence pretraining for LED as future work (Page 10).\n  > *Source Passage:* \"that LED achieves state- of-the-art results on arXiv, slightly outperform- ing BigBird (Zaheer et al., 2020). Note that the BigBird summarization model supports sequence length of 4K tokens but starts from and continues ...\"\n\n#### 2. Inferred Research Gaps Across the Collection *(Requires Human Scientific Review)*:\n• **Inferred Gap A — Benchmark & Length Disparity Across Architectures:** Standard pre-trained models (BART, T5, PEGASUS) were primarily pre-trained and evaluated on short documents (CNN/DM, XSum < 800 tokens). Although Longformer (LED) and Discourse-Aware Summarization demonstrate effectiveness on long papers (PubMed, arXiv > 3,000 tokens), controlled benchmark comparisons between linear sliding-window attention and hierarchical section discourse under identical pre-training budgets remain underexplored.\n• **Inferred Gap B — Domain-Specific Pre-training vs General Crawl:** Most foundation models (BART, T5) rely exclusively on general web scrape (C4, Common Crawl, Wikipedia). Whether specialized pre-training from scratch on full scientific papers using Gap Sentences Generation (GSG) or Linear Attention (LED) yields superior domain summarization compared to web pretraining remains open in this collection.\n• **Inferred Gap C — Reporting Standardization for Compute and Energy Footprints:** The papers exhibit wide variance in compute disclosure. While T5 and PEGASUS report large TPU budgets without evaluating deployment latency, and Longformer analyzes custom CUDA FLOPs, none of the papers provide standardized carbon footprint or commodity GPU inference benchmarks.\n\n#### 3. What CANNOT Be Concluded From This Collection Alone:\n• We **cannot conclude** that any single model is universally superior across all summarization tasks, because experimental setups, test splits, tokenization, and metric implementations differ across publications.\n• We **cannot conclude** real-world production or clinical deployment latency without benchmarking all six models on identical serving hardware.\n• We **cannot conclude** whether PEGASUS (GSG) or BART (denoising autoencoder) is inherently superior as a pre-training objective, because their pre-training data volumes (3.8TB HugeNews vs 160GB RoBERTa corpus) and parameter scales differ substantially.",
+    "citations_count": 6,
+    "citations": [
+      {
+        "filename": "02_SciTLDR.pdf",
+        "page_number": 9,
+        "score": 0.0906,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "that exploits auxiliary training sig- nal from paper titles. We show that our approach improves over strong modeling baselines. Existing met"
+      },
+      {
+        "filename": "01_Discourse_Aware_Summarization.pdf",
+        "page_number": 5,
+        "score": 0.0873,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "from the source by attending to various discourse sections. 7 Conclusions and future work This work was the ﬁrst attempt at addressing neura"
+      },
+      {
+        "filename": "06_Longformer.pdf",
+        "page_number": 10,
+        "score": 0.0599,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "that LED achieves state- of-the-art results on arXiv, slightly outperform- ing BigBird (Zaheer et al., 2020). Note that the BigBird summariz"
+      },
+      {
+        "filename": "05_T5.pdf",
+        "page_number": 27,
+        "score": 0.0589,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "which is a question-answering data set with passages sourced from Wikipedia. Similar observations have been made in prior work, e.g. Beltagy"
+      },
+      {
+        "filename": "04_BART.pdf",
+        "page_number": 7,
+        "score": 0.0538,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "We show the performance of both steps of our model in the ﬁxed BART and tuned BART rows. For each row we experiment on the original WMT16 Ro"
+      },
+      {
+        "filename": "03_PEGASUS.pdf",
+        "page_number": 6,
+        "score": 0.0386,
+        "valid": true,
+        "reason": "Verified (100% match)",
+        "snippet": "and Unigram vocab- ulary size of 96k. In total, PEGASUSLARGE had 568M parameters. To encourage the model to copy, which is an important as-"
+      }
+    ]
+  }
+]

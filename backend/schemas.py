@@ -5,7 +5,7 @@ All API input validation and output serialisation flows through these models.
 """
 
 from __future__ import annotations
-from typing import Optional, List
+from typing import Optional, List, Any, Dict
 from pydantic import BaseModel, Field
 
 
@@ -150,22 +150,28 @@ class HealthOut(BaseModel):
 # ─── Collection Research Brief ────────────────────────────────────────────────
 
 class BriefSection(BaseModel):
-    section_id:   str
-    title:        str
-    content:      str
-    papers_cited: List[str] = Field(default_factory=list)
-    key_points:   List[str] = Field(default_factory=list)
-    caveats:      Optional[str] = None
+    section_id:      str
+    title:           str
+    content:         str
+    papers_cited:    List[str] = Field(default_factory=list)
+    key_points:      List[str] = Field(default_factory=list)
+    caveats:         Optional[str] = None
+    evidence_items:  Optional[List[dict]] = Field(default_factory=list)
+    structured_data: Optional[Any] = None
 
 
 class CollectionBriefOut(BaseModel):
-    workspace_id:      str
-    research_question: str
-    paper_count:       int
-    sections:          List[BriefSection]
-    coverage_stats:    dict
-    created_at:        str
-    updated_at:        str
+    workspace_id:           str
+    research_question:      str
+    paper_count:            int
+    sections:               List[BriefSection]
+    coverage_stats:         dict
+    created_at:             str
+    updated_at:             str
+    executive_synthesis:    Optional[str] = None
+    key_findings:           Optional[List[dict]] = Field(default_factory=list)
+    cross_paper_matrix:     Optional[List[dict]] = Field(default_factory=list)
+    research_opportunities: Optional[List[dict]] = Field(default_factory=list)
 
 
 # ─── Cross-Paper Q&A ──────────────────────────────────────────────────────────
